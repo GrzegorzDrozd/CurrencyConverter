@@ -1,0 +1,19 @@
+{
+    "name": "grzegorzdrozd/currency-converter",
+    "description": "Example application, currency converting logic",
+    "type": "library",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Grzegorz Drozd",
+            "email": "grzegorz.drozd@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "florianv/swap": "^3.0@dev",
+        "php-http/message": "^1.6@dev",
+        "php-http/guzzle6-adapter": "^1.1",
+        "cache/filesystem-adapter": "^1.1@dev"
+    }
+}
