@@ -16,16 +16,22 @@ use Zend\Log\Logger;
 class CurrencyConverterService {
 
     /**
+     * For how long store rate in cache
+     *
      * @var int
      */
-    protected $cacheTtl = 6000;
+    protected $cacheTtl = 600;
 
     /**
+     * Converter object
+     *
      * @var \Swap\Swap
      */
     protected $converter;
 
     /**
+     * Cache dir location
+     *
      * @var string
      */
     protected $tempDir;
@@ -45,28 +51,33 @@ class CurrencyConverterService {
     }
 
     /**
+     * Do currency conversion.
+     *
      * @param string $from
      * @param string $to
+     * @param int $amount
      * @return string
      */
-    public function convert(string $from, string $to): ?string {
+    public function convert(string $from, string $to, $amount = 1): ?string {
         try {
             $swap = $this->getConverter();
         } catch (\Exchanger\Exception\Exception $e) {
-            $this->logging->err($e->getMessage());
+            $this->getLoggin()->err($e->getMessage());
             return null;
         }
 
         try {
             $rate = $swap->latest(sprintf('%s/%s', $from, $to));
-            return $rate->getValue();
+            return $rate->getValue()*$amount;
         } catch (\Exchanger\Exception\Exception  $e){
-            $this->logging->err($e->getMessage());
+            $this->getLoggin()->err($e->getMessage());
             return null;
         }
     }
 
     /**
+     * Setup converter
+     *
      * @return \Swap\Swap
      */
     protected function getConverter(): \Swap\Swap {
@@ -80,8 +91,8 @@ class CurrencyConverterService {
             $filesystem        = new Filesystem($filesystemAdapter);
             $cachePool         = new FilesystemCachePool($filesystem);
         } catch (\Exception $e) {
-            $this->logging->err($e->getMessage());
-            throw new \RuntimeException();
+            $this->getLoggin()->err($e->getMessage());
+            throw new \RuntimeException('Unable to setup converter', null, $e);
         }
 
         // build currency converter
@@ -91,8 +102,8 @@ class CurrencyConverterService {
                 ->add('forge', ['api_key' => 'NpQYwk5r38oRWweqlsBHTyVyUsknJr4c'])
                 ->build();
         } catch (\Exception $e) {
-            $this->logging->err($e->getMessage());
-            throw new \RuntimeException();
+            $this->getLoggin()->err($e->getMessage());
+            throw new \RuntimeException('Unable to create converter', null, $e);
         }
         
         return $this->converter;
@@ -132,5 +143,19 @@ class CurrencyConverterService {
         $this->tempDir = $tempDir;
 
         return $this;
+    }
+
+    /**
+     * @return Logger
+     */
+    public function getLogging(): Logger {
+        return $this->logging;
+    }
+
+    /**
+     * @param Logger $logging
+     */
+    public function setLogging(Logger $logging): void {
+        $this->logging = $logging;
     }
 }
