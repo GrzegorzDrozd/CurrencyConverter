@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "GrzegorzDrozd\\": "src/"
+            "GrzegorzDrozd\\CurrencyConverter": "src/GrzegorzDrozd/CurrencyConverter"
         }
     }
 }
