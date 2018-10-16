@@ -24,4 +24,4 @@ composer require grzegorzdrozd/currency-converter
 
 ## Requirements
 This library was written on php 7.2.10. I did not test it on different version of php.
-Required extensions: curl, openssl, sockets
+Required extensions: curl, json,  openssl, sockets
