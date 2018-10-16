@@ -15,5 +15,10 @@
         "php-http/message": "^1.6@dev",
         "php-http/guzzle6-adapter": "^1.1",
         "cache/filesystem-adapter": "^1.1@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "GrzegorzDrozd\\": "src/"
+        }
     }
 }

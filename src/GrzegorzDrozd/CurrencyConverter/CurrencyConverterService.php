@@ -1,11 +1,14 @@
 <?php
 namespace GrzegorzDrozd\CurrencyConverter;
 
+use Interop\Container\ContainerInterface;
 use Swap\Builder;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Cache\Adapter\Filesystem\FilesystemCachePool;
 use Zend\Log\Logger;
+use Zend\ModuleManager\ModuleManager;
+use Zend\ModuleManager\ModuleManagerInterface;
 
 /**
  * Wrapper around currency converter.
@@ -40,6 +43,11 @@ class CurrencyConverterService {
      * @var Logger
      */
     protected $logging;
+
+    /**
+     * @var string
+     */
+    protected $apiKey;
 
     /**
      * CurrencyConverterService constructor.
@@ -99,7 +107,7 @@ class CurrencyConverterService {
         try {
             $this->converter = (new Builder(['cache_ttl' => $this->getCacheTtl()]))
                 ->useCacheItemPool($cachePool)
-                ->add('forge', ['api_key' => 'NpQYwk5r38oRWweqlsBHTyVyUsknJr4c'])
+                ->add('forge', ['api_key' =>  $this->apiKey])
                 ->build();
         } catch (\Exception $e) {
             $this->getLoggin()->err($e->getMessage());
@@ -157,5 +165,22 @@ class CurrencyConverterService {
      */
     public function setLogging(Logger $logging): void {
         $this->logging = $logging;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiKey(): string {
+        if (empty($this->apiKey)) {
+            throw new \RuntimeException('Please set api key');
+        }
+        return $this->apiKey;
+    }
+
+    /**
+     * @param string $apiKey
+     */
+    public function setApiKey(string $apiKey): void {
+        $this->apiKey = $apiKey;
     }
 }
